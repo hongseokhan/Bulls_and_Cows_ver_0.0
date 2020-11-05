@@ -1,4 +1,4 @@
-from bot import Gamebot
+from bot import Bot
 from player import Player
 
 
@@ -13,6 +13,18 @@ class Gameinterface:
         self._score = 1000
         self._trys = 1
         self._game_score = 0
+        self._answer_num_list = []
+        self._strikes = 0
+        self._balls = 0
+    def sb_count_calculator(self,answer_num_list,input_num_list):
+        for n,nvalue in enumerate(answer_num_list):    
+            for m,mvalue in enumerate(input_num_list):
+                if nvalue == mvalue:
+                    if n == m:
+                        self._strikes += 1
+                    else:
+                        self._balls += 1
+                        
     def score_calculator(self,strikes,balls):
         self._score -= self._score_try
         
@@ -29,7 +41,23 @@ class Gameinterface:
     @score.setter
     def score(self,score):
         self._score = score
-        
+    
+    @property
+    def strike(self):
+        return self._strikes
+
+    @strike.setter
+    def strike(self, strikes):
+        self._strikes = strikes
+	
+    @property
+    def ball(self):
+        return self._balls
+
+    @ball.setter
+    def ball(self, balls):
+        self._balls = balls
+
     def show_result(self,strikes,balls,trys,score):
         if strikes ==0 and balls == 0:
             print(f'<{trys}차 시도>, Nothing 입니다.')
@@ -37,7 +65,7 @@ class Gameinterface:
             print('-----------------------------------------------')
         
         else:
-            print(f'<{trys}차시도> {strikes}스트라이크 {balls}볼 입니다.')
+            print(f'<{trys}차시도> {strikes}스트라이크{balls}볼 입니다.')
             print(f'{score}점')
             print('-----------------------------------------------')
     def win_game(self,trys,score):
@@ -52,31 +80,30 @@ class Gameinterface:
         print(f'봇이 가지고 있는 숫자는 {random_num_list}입니다')
 
     def make_bot(self):
-        game = Gamebot()
-        game.init_random_num_list()
-        bot = game.random_num_list
-        return bot
+        bot = Bot()
+        bot.init_random_num_list()
+        bot_num = bot.random_num_list
+        return bot_num
     
     def start_game(self):
-        bot = self.make_bot()
+        bot_num = self.make_bot()
         while True:
-            game = Gamebot()
-            player_num = Player()
-            player_num.check_input_num_list()
-            player = player_num.input_num_list
-            game.sb_count_calculator(bot,player)
-            strike_num = game.strikes
-            ball_num = game.balls
-            self.score_calculator(strike_num,ball_num)
+            player = Player()
+            player.check_input_num_list()
+            player_num = player.input_num_list
+            self.sb_count_calculator(bot_num,player_num)
+            strikes_num = self.strike
+            balls_num = self.ball
+            self.score_calculator(strikes_num,balls_num)
             self._game_score = self.score
-            self.show_result(game.strikes,game.balls,self._trys,self._game_score)
+
+            self.show_result(strikes_num,balls_num,self._trys,self._game_score)
             
-            if strike_num == 4:
+            if self._strikes == 4:
                 self.win_game(self._trys,self._game_score)
                 break
             
             elif self._trys >= self._try_max or self._game_score <= 0:
-                self.lose_game(self._try_max,self._game_score,bot)
+                self.lose_game(self._try_max,self._game_score,bot_num)
                 break
             self._trys += 1
-            
