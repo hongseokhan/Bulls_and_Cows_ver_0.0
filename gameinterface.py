@@ -85,7 +85,7 @@ class Gameinterface:
         bot_num = bot.random_num_list
         return bot_num
     
-    def start_game(self):
+    def pvb_start_game(self):
         bot_num = self.make_bot()
         while True:
             player = Player()
