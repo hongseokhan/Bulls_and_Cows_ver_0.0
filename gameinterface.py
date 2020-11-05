@@ -12,11 +12,10 @@ class Gameinterface:
         self._try_max =10
         self._score = 1000
         self._trys = 1
-        self._game_score = 0
         self._answer_num_list = []
+    def sb_count_calculator(self,answer_num_list,input_num_list):
         self._strikes = 0
         self._balls = 0
-    def sb_count_calculator(self,answer_num_list,input_num_list):
         for n,nvalue in enumerate(answer_num_list):    
             for m,mvalue in enumerate(input_num_list):
                 if nvalue == mvalue:
@@ -79,31 +78,23 @@ class Gameinterface:
         print(f'당신의 점수는 {score}점 입니다.')
         print(f'봇이 가지고 있는 숫자는 {random_num_list}입니다')
 
-    def make_bot(self):
-        bot = Bot()
-        bot.init_random_num_list()
-        bot_num = bot.random_num_list
-        return bot_num
     
     def pvb_start_game(self):
-        bot_num = self.make_bot()
+        bot = Bot()
+        bot.init_random_num_list()
         while True:
             player = Player()
             player.check_input_num_list()
-            player_num = player.input_num_list
-            self.sb_count_calculator(bot_num,player_num)
-            strikes_num = self.strike
-            balls_num = self.ball
-            self.score_calculator(strikes_num,balls_num)
-            self._game_score = self.score
-
-            self.show_result(strikes_num,balls_num,self._trys,self._game_score)
+            self.sb_count_calculator(bot.random_num_list,player.input_num_list)
+            self.score_calculator(self._strikes,self._balls)
+            self._score = self._score
+            self.show_result(self._strikes,self._balls,self._trys,self._score)
             
             if self._strikes == 4:
-                self.win_game(self._trys,self._game_score)
+                self.win_game(self._trys,self._score)
                 break
             
-            elif self._trys >= self._try_max or self._game_score <= 0:
-                self.lose_game(self._try_max,self._game_score,bot_num)
+            elif self._trys >= self._try_max or self._score <= 0:
+                self.lose_game(self._try_max,self._score,bot.random_num_list)
                 break
             self._trys += 1

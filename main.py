@@ -7,4 +7,4 @@ print('--------------------------------------------------')
 
 
 gameinterface = Gameinterface()
-gameinterface.start_game()
+gameinterface.pvb_start_game()
